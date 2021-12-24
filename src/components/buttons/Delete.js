@@ -3,6 +3,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { Typography } from "@material-ui/core";
 import { API } from "../../config/api";
+import { useHistory } from "react-router";
 
 const style = {
   position: "absolute",
@@ -20,14 +21,15 @@ function Delete({ dataId }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const history = useHistory()
 
   const handleDelete = async () => {
     const id = dataId;
     console.log(id);
     const response = await API.delete(`/products/${id}`);
-    setOpen(false);
+    
+    history.push("/dashboard");
   };
-
 
   return (
     <div>

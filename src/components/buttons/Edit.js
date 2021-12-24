@@ -28,7 +28,7 @@ function Edit({ dataId }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const location = useLocation();
-  const history = useHistory()
+  const history = useHistory();
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -42,7 +42,7 @@ function Edit({ dataId }) {
   const handleEdit = async (e) => {
     try {
       e.preventDefault();
-    
+
       console.log(stok);
       const config = {
         headers: {
@@ -51,9 +51,11 @@ function Edit({ dataId }) {
       };
       const body = JSON.stringify(form);
 
-      const response = await API.put(`/products/${dataId}`, {"data": {"stok": stok}});
-      setOpen(false)
-      history.push("/dashboard")
+      const response = await API.put(`/products/${dataId}`, {
+        data: { stok: stok },
+      });
+      setOpen(false);
+      history.push("/dashboard");
     } catch (error) {
       console.log(error);
     }

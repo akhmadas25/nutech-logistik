@@ -14,7 +14,6 @@ const Dashboard = () => {
     getProducts();
   }, [Products]);
 
-
   return (
     <div className="container-fluid text-center bg-light py-5">
       <div>
@@ -43,7 +42,7 @@ const Dashboard = () => {
                       </div>
                       <div class="d-flex justify-content-between align-items-center">
                         <p className=" text-start">
-                          {"harga jual : Rp,"}
+                          {"harga beli : Rp,"}
                           {item.attributes.harga_beli}
                         </p>
                         <p className=" text-end">

@@ -5,7 +5,6 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Typography } from "@material-ui/core";
 import { API } from "../config/api";
-import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -23,9 +22,7 @@ function AddProduct() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const [files, setFiles] = useState([]);
-
+  const [files, setFiles] = useState(null);
   const [form, setForm] = useState({
     title: "",
     image: "",
@@ -45,47 +42,33 @@ function AddProduct() {
     try {
       e.preventDefault();
 
-      const config = {
-        headers: {
-          "Content-type": "multipart/formdata",
-        },
-      };
-
       const formData = new FormData();
-      formData.append("image", files[0], files[0].name)
-      formData.set("title", form.title);
-      formData.set("harga_jual", form.harga_jual);
-      formData.set("harga_beli", form.harga_beli);
-      formData.set("stok", form.stok);
-      await API.post("/products?populate=image", config, formData)
-        .then( (response) => {
-          console.log(response);
-          //after success
-          //   const imageId = response.data[0].id;
-          //   console.log(imageId);
-          //   setForm({
-          //     ...form,
-          //     image: imageId,
-          //   });
-          //   const body = JSON.stringify(form);
-          //   console.log(body);
-          //   const data = await API.post("/products", body);
-          //   console.log(data);
+      formData.append("files", files);
+
+      API.post("/upload", formData)
+        .then(function (response) {
+          // handle success
+          API.post("/products?populate=image", {
+            data: {
+              title: form.title,
+              stok: form.stok,
+              harga_jual: form.harga_jual,
+              harga_beli: form.harga_beli,
+              image: response.data[0].id,
+            },
+          }).then(function (response) {
+            console.log(response);
+          });
         })
-        .catch((error) => {
-          //handle error
+        .catch(function (error) {
           console.log(error);
         });
 
-      console.log(files[0].name);
+      setOpen(false);
     } catch (error) {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    console.log("coba");
-  }, []);
 
   return (
     <div>
@@ -147,10 +130,9 @@ function AddProduct() {
               type="file"
               hidden
               name="image"
-              onChange={(e) => setFiles(e.target.files)}
+              onChange={(e) => setFiles(e.target.files[0])}
             />
           </Button>
-
           <Button
             type="submit"
             fullWidth
